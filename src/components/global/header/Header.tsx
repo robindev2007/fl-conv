@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import Container from "./Container";
+import Container from "../Container";
+import ThemeSwitcher from "./ThemeSwitcher";
 
 const NavList = [
   { name: "Home", href: "/" },
@@ -26,7 +27,10 @@ const Header = () => {
               ))}
             </ul>
 
-            <Button>Go Premium</Button>
+            <div className="flex gap-2">
+              <ThemeSwitcher />
+              <Button>Go Premium</Button>
+            </div>
           </nav>
         </Container>
       </header>

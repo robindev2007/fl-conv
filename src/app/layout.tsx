@@ -1,4 +1,5 @@
-import Header from "@/components/global/Header";
+import Header from "@/components/global/header/Header";
+import { ThemeProvider } from "@/providers/ThemeProvider";
 import "@/styles/globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
@@ -21,10 +22,12 @@ export default function RootLayout({
   return (
     <html lang="en" className="">
       <body className={`${inter.className} antialiased`}>
-        <main className="min-h-dvh bg-background text-foreground h-full">
-          <Header />
-          {children}
-        </main>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <main className="min-h-dvh bg-background text-foreground h-full">
+            <Header />
+            {children}
+          </main>
+        </ThemeProvider>
       </body>
     </html>
   );

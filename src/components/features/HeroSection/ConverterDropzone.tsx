@@ -3,18 +3,25 @@ import { FileDropzone } from "@/components/ui/file-dropzone";
 import { useState } from "react";
 import UploadedFileList from "./UploadedFileList";
 
+export type FileState = {
+  file: File;
+  outputFormat: string;
+  isConverted: boolean;
+};
+
 const ConverterDropzone = () => {
-  const [files, setFiles] = useState<File[]>([]);
+  const [files, setFiles] = useState<FileState[]>([]);
 
   const handleFilesAccepted = (files: File[]) => {
-    console.log(files);
-    setFiles(files);
+    setFiles(
+      files.map((file) => ({ file, outputFormat: "", isConverted: false }))
+    );
   };
 
   return (
-    <div className="w-full  mx-auto">
+    <div className="w-full  mx-auto" draggable>
       {files.length > 0 ? (
-        <UploadedFileList files={files} />
+        <UploadedFileList setFiles={setFiles} files={files} />
       ) : (
         <FileDropzone
           onFilesSelected={handleFilesAccepted}
