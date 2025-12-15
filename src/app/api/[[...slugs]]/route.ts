@@ -60,11 +60,3 @@ export const POST = app.fetch;
 // Source - https://stackoverflow.com/a
 // Posted by T.J, modified by community. See post 'Timeline' for change history
 // Retrieved 2025-12-15, License - CC BY-SA 4.0
-
-export const config = {
-  api: {
-    bodyParser: {
-      sizeLimit: "100mb",
-    },
-  },
-};
