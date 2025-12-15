@@ -2,25 +2,49 @@ import { openapi } from "@elysiajs/openapi";
 import { Elysia, t } from "elysia";
 import sharp from "sharp";
 
-const app = new Elysia({ prefix: "/api" }).use(openapi());
+export const runtime = "nodejs";
+export const maxDuration = 60;
 
+const app = new Elysia({ prefix: "/api" }).use(openapi());
 app.post(
   "/convert",
   async ({ body: { file } }) => {
     const fileArrayBuffer = await file.arrayBuffer();
 
-    const convertedBuffer = await sharp(Buffer.from(fileArrayBuffer))
-      .webp()
-      .toBuffer();
-
-    // Convert Buffer → Uint8Array (Blob-compatible)
-    const uint8Array = new Uint8Array(convertedBuffer);
-
-    const newFile = new File([uint8Array], "example.webp", {
-      type: "image/webp",
+    // Create sharp instance
+    const image = sharp(Buffer.from(fileArrayBuffer), {
+      limitInputPixels: false,
     });
 
-    return newFile;
+    // Read metadata
+    const metadata = await image.metadata();
+
+    // Resize only if image is too large
+    const pipeline =
+      (metadata.width ?? 0) > 8192 || (metadata.height ?? 0) > 8192
+        ? image.resize({
+            width: 8192,
+            height: 8192,
+            fit: "inside",
+            withoutEnlargement: true,
+          })
+        : image;
+
+    // Convert to WebP safely
+    const convertedBuffer = await pipeline
+      .webp({
+        quality: 80,
+        lossless: false,
+        effort: 4,
+      })
+      .toBuffer();
+
+    // Buffer → Uint8Array (Blob-compatible)
+    const uint8Array = new Uint8Array(convertedBuffer);
+
+    return new File([uint8Array], "example.webp", {
+      type: "image/webp",
+    });
   },
   {
     body: t.Object({
@@ -39,7 +63,7 @@ export const POST = app.fetch;
 export const config = {
   api: {
     bodyParser: {
-      sizeLimit: "20mb",
+      sizeLimit: "100mb",
     },
   },
 };
