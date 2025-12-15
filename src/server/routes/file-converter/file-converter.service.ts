@@ -18,8 +18,6 @@ const convertFile = async (file: File, format: string): Promise<File> => {
     throw new Error("Input format does not match the file format");
   }
 
-  console.log({ inputFormat, outPutFormat, uriOutputFormat });
-
   if (!isValidConversion(inputFormat, outPutFormat)) {
     throw new Error("Not supported format");
   }
