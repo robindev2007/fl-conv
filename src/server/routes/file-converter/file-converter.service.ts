@@ -10,14 +10,12 @@ const convertFile = async (file: File, format: string): Promise<File> => {
 
   const [uriOutputFormat, outPutFormat] = format.split("-to-");
 
-  if (
-    !inputFormat ||
-    !uriOutputFormat ||
-    !outPutFormat ||
-    !uriOutputFormat ||
-    !outPutFormat
-  ) {
+  if (!inputFormat || !uriOutputFormat || !outPutFormat) {
     throw new Error("Invalid format");
+  }
+
+  if (uriOutputFormat !== inputFormat) {
+    throw new Error("Input format does not match the file format");
   }
 
   console.log({ inputFormat, outPutFormat, uriOutputFormat });
